@@ -6,10 +6,15 @@ class M_customer extends CI_Model {
         parent::__construct();
     }
 
-    public function loadDataTable()
+    public function loadDataTable($Filtering = '')
     {
+    	$Query_add = '';
+    	if ($Filtering != '' && $Filtering != null) {
+    		$Query_add .= ' where datediff(CURDATE(), a.Expired) = '.$Filtering;
+    	}
     	$sql = 'select a.*,datediff(CURDATE(), a.Expired) as DaysExpired
     			from iptv.customer as a
+    			'.$Query_add.'
     	';
         $query = $this->db->query($sql)->result_array();
         $data = array();

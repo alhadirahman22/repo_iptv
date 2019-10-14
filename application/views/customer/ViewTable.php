@@ -5,6 +5,18 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="col-md-4 col-md-offset-4">
+			<div class="form-group">
+				<label>Filtering</label>
+				<select class="form-control Filtering">
+					<option value="" selected>All</option>
+					<option value="-1">Day of Expire -1</option>
+					<option value="0">Day of Expire is today</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
 				<table class="table" id = "tbl_client">
@@ -18,7 +30,6 @@
 							<th style = "width: 5%;text-align: left;">Device</th>
 							<th style = "width: 10%;text-align: left;">Exp</th>
 							<th style = "width: 5%;text-align: left;">Left</th>
-							
 							<th style = "width: 15%;text-align: left;">Action</th>
 						</tr>
 					</thead>
@@ -37,19 +48,27 @@
 	var AppData = {
 		LoadData : function()
 		{
-			var data = {
-                action : 'read',
-            };
-             var token = jwt_encode(data,'UAP)(*');
-             var recordTable = $('#tbl_client').DataTable({
+             var recordTable = $('#tbl_client').DataTable({	
                  "processing": true,
                  "serverSide": false,
-                 "pageLength": 25,
+                 "pageLength": 10,
                  "ajax":{
                      url : base_url_js+"customer/action", // json datasource
                      ordering : false,
                      type: "post",  // method  , by default get
-                     data : {token : token}                                    
+                     // data : {token : token} 
+                     data: function(token){
+                               // Read values
+	                   			var Filtering = $('.Filtering option:selected').val();
+	                   			var data = {
+	                                   action : 'read',
+	                                   Filtering : Filtering,
+	                               };
+
+                               // Append to data
+                               var token = 
+                               token.token = jwt_encode(data,'UAP)(*');
+                     }                                   
                  },
                    'columnDefs': [
                       {
@@ -97,13 +116,19 @@
                      	$( row ).attr('style','background-color:red');
                      }    
                  },
-                 "order": [[ 7, "asc" ]],
+                 "order": [[ 7, "desc" ]],
                  dom: 'l<"toolbar">frtip',
                  initComplete: function(){
                    $('select[name="tbl_client_length"]').attr('class','form-control');
                    // $('input[type="search"]').attr('class','form-control');
                 }  
              });
+
+             recordTable.on( 'order.dt search.dt', function () {
+             		        recordTable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+             		            cell.innerHTML = i+1;
+             		        } );
+             		    } ).draw();
 
              oTable = recordTable;
 		},
@@ -167,5 +192,9 @@
         
         $('#btnSave').attr('action','edit');
         $('#btnSave').attr('data-id',ID);
+    })
+
+    $(document).off('change', '.Filtering').on('change', '.Filtering',function(e) {
+    	oTable.ajax.reload( null, false );
     })
 </script>

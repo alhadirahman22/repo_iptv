@@ -32,7 +32,8 @@ class C_customer extends MY_Controller {
         $Input = $this->getInputToken();
         $action = $Input['action'];
         if ($action == 'read') {
-        	$rs = $this->m_customer->loadDataTable();
+                $Filtering = $Input['Filtering'];
+        	$rs = $this->m_customer->loadDataTable($Filtering);
         	echo json_encode($rs);
         }
         elseif ($action == 'add') {
