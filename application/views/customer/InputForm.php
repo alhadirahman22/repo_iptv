@@ -121,10 +121,12 @@
 		       switch(key)
 		       {
 		        case  "Phone" :
-		              result = Validation_leastCharacter(10,arr[key],key);
-		              if (result['status'] == 0) {
-		                toatString += result['messages'] + "<br>";
-		              }
+		        	  if (arr[key] != '') {
+		        	  	result = Validation_leastCharacter(10,arr[key],key);
+		        	  	if (result['status'] == 0) {
+		        	  	  toatString += result['messages'] + "<br>";
+		        	  	}
+		        	  }
 		              break;
 		        case  "Device" :
 		              result = Validation_required(arr[key],key);
