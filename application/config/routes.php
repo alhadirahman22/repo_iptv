@@ -52,6 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // $route['default_controller'] = 'welcome';
 $route['default_controller'] = 'c_customer';
 $route['customer/action'] = 'c_customer/action_ajax';
+$route['customer/sync'] = 'c_customer/sync';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

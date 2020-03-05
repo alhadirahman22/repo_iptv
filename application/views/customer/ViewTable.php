@@ -14,6 +14,9 @@
 					<option value="0">Day of Expire is today</option>
 				</select>
 			</div>
+            <div class="form-group">
+                <button class="btn btn-xs btn-default" id = "btnSync">Sync</button>
+            </div>
 		</div>
 	</div>
 	<div class="row">
@@ -133,6 +136,31 @@
              oTable = recordTable;
 		},
 
+        sync : (selector) => {
+                var token = '';
+                var url = base_url_js + "customer/sync";
+                loading_button2(selector)
+                $.post(url,{ token:token },function (resultJson) {
+                        
+                }).done(function(resultJson) {
+                    if (resultJson == 1) {
+                        AppForm.LoadSetDefault();
+                        oTable.ajax.reload( null, false );
+                        toastr.success('Remove success');
+                    }
+                    else
+                    {
+                        toastr.error("Connection Error, Please try again", 'Error!!');
+                    }
+                     end_loading_button2(selector,'Sync'); 
+                }).fail(function() {
+                    toastr.error("Connection Error, Please try again", 'Error!!');
+                     end_loading_button2(selector,'Sync'); 
+                }).always(function() {
+
+                }); 
+        },
+
 		DeleteData : function(action='delete',ID){
         	if (confirm('Are you sure ?')) {
 	            var dataform = {
@@ -166,6 +194,11 @@
 		var action = 'delete';
 		AppData.DeleteData(action,ID);
 	})
+
+    $(document).off('click', '#btnSync').on('click', '#btnSync',function(e) {
+        let itsme = $(this);
+        AppData.sync(itsme);
+    })
 
 	$(document).off('click', '.btnRemove').on('click', '.btnRemove',function(e) {
 		var ID = $(this).attr('data-id');
